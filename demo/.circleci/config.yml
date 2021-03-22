@@ -1,0 +1,15 @@
+version: 2.1
+executors:
+  frontend-executor:
+    docker:
+      - image: circleci/node:10.15.3
+workflows:
+  welcome:
+    jobs:
+      - echo
+jobs:
+  echo:
+    executor: frontend-executor
+    steps:
+      - checkout
+      - run: npm run echo
