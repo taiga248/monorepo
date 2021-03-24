@@ -115,7 +115,7 @@ echo "Triggering pipeline with data:"
 echo -e "  $DATA"
 
 # URL="${CIRCLE_API}/v2/project/${REPOSITORY_TYPE}/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pipeline"
-URL="${CIRCLE_API}/v2/project/github/taiga248/monorepo/pipeline"
+URL="${CIRCLE_API}/v2/project/gh/taiga248/monorepo/pipeline"
 HTTP_RESPONSE=$(curl -s -u "a24c6242d26fa1e5e63113c464ad2de04e0bb5d9:" -o response.txt -w "%{http_code}" -X POST --header "Content-Type: application/json" -d "$DATA" "$URL")
 
 if [ "$HTTP_RESPONSE" -ge "200" ] && [ "$HTTP_RESPONSE" -lt "300" ]; then
