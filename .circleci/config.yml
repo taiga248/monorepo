@@ -60,9 +60,9 @@ jobs:
 
     steps:
       - checkout:
-        path: ~/monorepo
+          path: ~/monorepo
       - run:
-        command: echo "Hello World tg."
+          command: echo "Hello World tg."
 
 workflows:
   version: 2
