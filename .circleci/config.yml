@@ -47,11 +47,17 @@ jobs:
             echo "<< parameters.package_name >> built." > build.txt
       - run:
           name: Build
-          command: echo "Build << parameters.package_name >> ..."
+          command: echo "ビルド << parameters.package_name >> ..."
       - persist_to_workspace:
           root: ~/monorepo
           paths:
             - packages/<< parameters.package_name >>
+  echo:
+    steps:
+      - checkout:
+        path: ~/monorepo
+      - run:
+        command: echo "Hello World tg."
 
 
 workflows:
@@ -73,11 +79,8 @@ workflows:
       - build:
           name: demo-build
           package_name: demo
-      - deploy:
-          name: demo-deploy
-          package_name: demo
-          requires:
-            - demo-build
+      - echo
+
 
   sample:
     when: << pipeline.parameters.sample >>
@@ -85,8 +88,4 @@ workflows:
       - build:
           name: sample-build
           package_name: sample
-      - deploy:
-          name: sample-deploy
-          package_name: sample
-          requires:
-            - sample-build
+      - echo
