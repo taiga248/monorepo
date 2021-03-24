@@ -24,7 +24,7 @@ jobs:
       - checkout
       - run:
           name: Trigger workflows
-          command: chmod +x .circleci/circle_trigger.sh  && .circleci/circle_trigger.sh
+          command: chmod +x .circleci/circle_trigger.sh
 
   build:
     parameters:
@@ -38,7 +38,7 @@ jobs:
       - checkout:
           path: ~/monorepo
       - run:
-          name: Content 
+          name: Content
           command: |
             cat README.md 
             echo "<< parameters.package_name >> built." > build.txt
@@ -64,7 +64,6 @@ jobs:
       - run:
         command: echo "Hello World tg."
 
-
 workflows:
   version: 2
   ci:
@@ -89,4 +88,4 @@ workflows:
           package_name: sample
       - echo:
           name: sample-build
-          package_name: sample 
+          package_name: sample
