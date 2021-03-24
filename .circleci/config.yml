@@ -68,25 +68,25 @@ workflows:
   # Workflows defined for each package.
 
   demo:
-    when: << pipeline.parameters.api >>
+    when: << pipeline.parameters.demo >>
     jobs:
       - build:
-          name: api-build
+          name: demo-build
           package_name: demo
       - deploy:
-          name: api-deploy
+          name: demo-deploy
           package_name: demo
           requires:
-            - api-build
+            - demo-build
 
   sample:
-    when: << pipeline.parameters.app >>
+    when: << pipeline.parameters.sample >>
     jobs:
       - build:
-          name: app-build
+          name: sample-build
           package_name: sample
       - deploy:
-          name: app-deploy
+          name: sample-deploy
           package_name: sample
           requires:
-            - app-build
+            - sample-build
