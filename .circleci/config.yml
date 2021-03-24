@@ -53,6 +53,7 @@ jobs:
           paths:
             - packages/<< parameters.package_name >>
   echo:
+    executor: node
     steps:
       - checkout:
         path: ~/monorepo
