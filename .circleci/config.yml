@@ -1,12 +1,10 @@
 version: 2.1
 
 parameters:
-  # This parameter is used to trigger the main workflow
   trigger:
     type: boolean
     default: true
 
-  # A parameter per package
   demo:
     type: boolean
     default: false
@@ -51,8 +49,15 @@ jobs:
           root: ~/monorepo
           paths:
             - packages/<< parameters.package_name >>
+
   echo:
+    parameters:
+      package_name:
+        type: string
+
     executor: node
+    working_directory: ~/monorepo/packages/<< parameters.package_name >>
+
     steps:
       - checkout:
         path: ~/monorepo
@@ -67,12 +72,13 @@ workflows:
     jobs:
       - trigger-workflows
 
-  # Workflows defined for each package.
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
+      - build
       - echo
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
+      - build
       - echo
