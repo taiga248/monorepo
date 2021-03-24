@@ -39,7 +39,6 @@ jobs:
     steps:
       - checkout:
           path: ~/monorepo
-      # This step is added only to show that we are in the package directory
       - run:
           name: Content 
           command: |
@@ -63,30 +62,17 @@ jobs:
 
 workflows:
   version: 2
-
-  # The main workflow responsible for triggering all other workflows
-  # in which changes are detected.
   ci:
     when: << pipeline.parameters.trigger >>
     jobs:
       - trigger-workflows
 
-
   # Workflows defined for each package.
-
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
-      # - build:
-      #     name: demo-build
-      #     package_name: demo
       - echo
-
-
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
-      # - build:
-      #     name: sample-build
-      #     package_name: sample
       - echo
