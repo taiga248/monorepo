@@ -17,7 +17,7 @@ parameters:
 executors:
   node:
     docker:
-      - image: circleci/node
+      - image: circleci/node:10.15.3
 
 jobs:
   trigger-workflows:
