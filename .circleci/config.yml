@@ -24,7 +24,7 @@ jobs:
       - checkout
       - run:
           name: Trigger workflows
-          command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
+          command: chmod +x .circleci/circle_trigger.sh && ls -l && .circleci/circle_trigger.sh
 
   build:
     parameters:
