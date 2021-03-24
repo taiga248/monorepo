@@ -1,13 +1,92 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-# Use a package of configuration called an orb.
-orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
-# Orchestrate or schedule a set of jobs
+
+parameters:
+  trigger:
+    type: boolean
+    default: true
+
+  demo:
+    type: boolean
+    default: false
+  sample:
+    type: boolean
+    default: false
+
+executors:
+  node:
+    docker:
+      - image: circleci/node:10.15.3
+
+jobs:
+  trigger-workflows:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Trigger workflows
+          command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
+
+  build:
+    parameters:
+      package_name:
+        type: string
+
+    executor: node
+    working_directory: ~/monorepo/packages/<< parameters.package_name >>
+
+    steps:
+      - checkout:
+          path: ~/monorepo
+      - run:
+          name: Content 
+          command: |
+            cat README.md 
+            echo "<< parameters.package_name >> built." > build.txt
+      - run:
+          name: Build
+          command: echo "ビルド << parameters.package_name >> ..."
+      - persist_to_workspace:
+          root: ~/monorepo
+          paths:
+            - packages/<< parameters.package_name >>
+
+  echo:
+    parameters:
+      package_name:
+        type: string
+
+    executor: node
+    working_directory: ~/monorepo/packages/<< parameters.package_name >>
+
+    steps:
+      - checkout:
+        path: ~/monorepo
+      - run:
+        command: echo "Hello World tg."
+
+
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  ci:
+    when: << pipeline.parameters.trigger >>
     jobs:
-      - welcome/run
+      - trigger-workflows
+
+  demo:
+    when: << pipeline.parameters.demo >>
+    jobs:
+      - build:
+          name: demo-build
+          package_name: demo
+      - echo:
+          name: demo-build
+          package_name: demo
+  sample:
+    when: << pipeline.parameters.sample >>
+    jobs:
+      - build:
+          name: sample-build
+          package_name: sample
+      - echo:
+          name: sample-build
+          package_name: sample 
