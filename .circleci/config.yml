@@ -77,16 +77,16 @@ workflows:
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
-      - build:
-          name: demo-build
-          package_name: demo
+      # - build:
+      #     name: demo-build
+      #     package_name: demo
       - echo
 
 
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
-      - build:
-          name: sample-build
-          package_name: sample
+      # - build:
+      #     name: sample-build
+      #     package_name: sample
       - echo
