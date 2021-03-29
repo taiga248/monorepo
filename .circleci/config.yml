@@ -40,10 +40,6 @@ jobs:
           command: chmod +x .circleci/circle_trigger.sh && ls -l && .circleci/circle_trigger.sh
 
   package-install-and-lint:
-    parameters:
-      package_name:
-        type: string
-
     executor: node
     steps:
       - checkout:
@@ -102,7 +98,7 @@ workflows:
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
-      - package-install-and-lint:
+      - package-install-and-lint
       - build:
           name: demo-build
           package_name: demo
@@ -112,7 +108,7 @@ workflows:
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
-      - package-install-and-lint:
+      - package-install-and-lint
       - build:
           name: sample-build
           package_name: sample
