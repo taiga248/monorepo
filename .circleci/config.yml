@@ -43,18 +43,6 @@ jobs:
           command: npm run lint
           working_directory: ~/monorepo/<< parameters.package_name >>
 
-  build:
-    parameters:
-      package_name:
-        type: string
-    executor: node
-    steps:
-      - checkout:
-          path: ~/monorepo
-      - run:
-          name: Build
-          command: echo "<< parameters.package_name >> , ビルドしてます..."
-
   echo:
     parameters:
       package_name:
@@ -64,7 +52,9 @@ jobs:
       - checkout:
           path: ~/monorepo
       - run:
-          command: echo "Hello World tg."
+          name: Echo 
+          command: echo "This working_directory is '<< parameters.package_name >>''"
+          working_directory: ~/monorepo/<< parameters.package_name >>
 
 workflows:
   version: 2
@@ -77,44 +67,34 @@ workflows:
     when: << pipeline.parameters.demo >>
     jobs:
       - package-install-and-lint:
-          name: demo-install
+          name: demo-install-lint
           package_name: demo
-          filters:
-            branches:
-              only:
-                - develop
-      - build:
-          name: demo-build
-          package_name: demo
-          requires:
-            - package-install-and-lint
           filters:
             branches:
               only:
                 - develop
       - echo:
-          name: demo-build
+          name: demo-echo
           package_name: demo
+          filters:
+            branches:
+              only:
+                - develop
 
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
       - package-install-and-lint:
-          name: sample-install
+          name: sample-install-lint
           package_name: sample
-          filters:
-            branches:
-              only:
-                - develop
-      - build:
-          name: sample-build
-          package_name: sample
-          requires:
-            - package-install-and-lint
           filters:
             branches:
               only:
                 - develop
       - echo:
-          name: sample-build
+          name: sample-echo
           package_name: sample
+          filters:
+            branches:
+              only:
+                - develop
