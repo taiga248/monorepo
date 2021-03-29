@@ -37,9 +37,11 @@ jobs:
       - run:
           name: Package install
           command: npm install
+          working_directory: ~/monorepo/<< parameters.package_name >>
       - run:
           name: Lint
           command: npm run lint
+          working_directory: ~/monorepo/<< parameters.package_name >>
 
   build:
     parameters:
@@ -75,8 +77,8 @@ workflows:
     when: << pipeline.parameters.demo >>
     jobs:
       - package-install-and-lint:
-            name: demo-install
-            package_name: demo      
+          name: demo-install
+          package_name: demo
       - build:
           name: demo-build
           package_name: demo
