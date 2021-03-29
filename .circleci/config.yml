@@ -17,6 +17,19 @@ executors:
     docker:
       - image: circleci/node:10.15.3
 
+references:
+  cache_key: &cache_key v1-dependencies-{{ checksum "package-lock.json" }}
+  save_node_modules: &save_node_modules
+    save_cache:
+      paths:
+        - node_modules
+      key: *cache_key
+  restore_node_modules: &restore_node_modules
+    restore_cache:
+      keys:
+        - *cache_key
+        - v1-dependencies-
+
 jobs:
   trigger-workflows:
     executor: node
@@ -34,10 +47,12 @@ jobs:
     steps:
       - checkout:
           path: ~/monorepo
+      - *restore_node_modules
       - run:
           name: Package install
           command: npm install
           working_directory: ~/monorepo/<< parameters.package_name >>
+      - *save_node_modules
       - run:
           name: Lint
           command: npm run lint
@@ -69,17 +84,10 @@ workflows:
       - package-install-and-lint:
           name: demo-install-lint
           package_name: demo
-          # filters:
-          #   branches:
-          #     only:
-          #       - develop
+
       - echo:
           name: demo-echo
           package_name: demo
-          # filters:
-          #   branches:
-          #     only:
-          #       - develop
 
   sample:
     when: << pipeline.parameters.sample >>
@@ -87,14 +95,7 @@ workflows:
       - package-install-and-lint:
           name: sample-install-lint
           package_name: sample
-          # filters:
-          #   branches:
-          #     only:
-          #       - develop
+
       - echo:
           name: sample-echo
           package_name: sample
-          # filters:
-          #   branches:
-          #     only:
-          #       - develop
