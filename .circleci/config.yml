@@ -17,19 +17,6 @@ executors:
     docker:
       - image: circleci/node:10.15.3
 
-# references:
-#   cache_key: &cache_key v1-dependencies-{{ checksum "package-lock.json" }}
-#   save_node_modules: &save_node_modules
-#     save_cache:
-#       paths:
-#         - node_modules
-#       key: *cache_key
-#   restore_node_modules: &restore_node_modules
-#     restore_cache:
-#       keys:
-#         - *cache_key
-#         - v1-dependencies-
-
 jobs:
   trigger-workflows:
     executor: node
@@ -39,17 +26,15 @@ jobs:
           name: Trigger workflows
           command: chmod +x .circleci/circle_trigger.sh && ls -l && .circleci/circle_trigger.sh
 
-  package-install-and-lint:
-    executor: node
-    steps:
-      - checkout:
-        path: ~/monorepo
-      # - *restore_node_modules
-      - run:
-          command: npm install
-      # - *save_node_modules
-      - run:
-          command: npm run lint
+  # package-install-and-lint:
+  #   executor: node
+  #   steps:
+  #     - checkout:
+  #       path: ~/monorepo
+  #     - run:
+  #         command: npm install
+  #     - run:
+  #         command: npm run lint
 
   build:
     parameters:
@@ -63,16 +48,8 @@ jobs:
       - checkout:
           path: ~/monorepo
       - run:
-          name: Content
-          command: |
-            echo "hoge << parameters.package_name >>"
-      - run:
           name: Build
           command: echo "ビルド << parameters.package_name >> ..."
-      - persist_to_workspace:
-          root: ~/monorepo
-          paths:
-            - packages/<< parameters.package_name >>
 
   echo:
     parameters:
@@ -98,7 +75,7 @@ workflows:
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
-      - package-install-and-lint
+      # - package-install-and-lint
       - build:
           name: demo-build
           package_name: demo
@@ -108,7 +85,7 @@ workflows:
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
-      - package-install-and-lint
+      # - package-install-and-lint
       - build:
           name: sample-build
           package_name: sample
