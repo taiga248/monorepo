@@ -18,11 +18,11 @@ executors:
       - image: circleci/node:10.15.3
 
 references:
-  cache_key: &cache_key v1-dependencies-{{ checksum "package-lock.json" }}
+  cache_key: &cache_key v1-dependencies-{{ checksum "<< pipeline.parameters.demo >>/package-lock.json" }}
   save_node_modules: &save_node_modules
     save_cache:
       paths:
-        - node_modules
+        - << pipeline.parameters.demo >>/node_modules
       key: *cache_key
   restore_node_modules: &restore_node_modules
     restore_cache:
