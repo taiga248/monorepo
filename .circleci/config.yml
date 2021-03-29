@@ -26,37 +26,40 @@ jobs:
           name: Trigger workflows
           command: chmod +x .circleci/circle_trigger.sh && ls -l .circleci && .circleci/circle_trigger.sh
 
-  build:
+  package-install-and-lint:
     parameters:
       package_name:
         type: string
-
     executor: node
-    working_directory: ~/monorepo/packages/<< parameters.package_name >>
-
     steps:
       - checkout:
           path: ~/monorepo
       - run:
-          name: Content
-          command: |
-            echo "hoge << parameters.package_name >>"
+          name: Package install
+          command: npm install
+          working_directory: ~/monorepo/<< parameters.package_name >>
+      - run:
+          name: Lint
+          command: npm run lint
+          working_directory: ~/monorepo/<< parameters.package_name >>
+
+  build:
+    parameters:
+      package_name:
+        type: string
+    executor: node
+    steps:
+      - checkout:
+          path: ~/monorepo
       - run:
           name: Build
-          command: echo "ビルド << parameters.package_name >> ..."
-      - persist_to_workspace:
-          root: ~/monorepo
-          paths:
-            - packages/<< parameters.package_name >>
+          command: echo "<< parameters.package_name >> , ビルドしてます..."
 
   echo:
     parameters:
       package_name:
         type: string
-
     executor: node
-    working_directory: ~/monorepo/packages/<< parameters.package_name >>
-
     steps:
       - checkout:
           path: ~/monorepo
@@ -73,18 +76,45 @@ workflows:
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
+      - package-install-and-lint:
+          name: demo-install
+          package_name: demo
+          filters:
+            branches:
+              only:
+                - develop
       - build:
           name: demo-build
           package_name: demo
+          requires:
+            - package-install-and-lint
+          filters:
+            branches:
+              only:
+                - develop
       - echo:
           name: demo-build
           package_name: demo
+
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
+      - package-install-and-lint:
+          name: sample-install
+          package_name: sample
+          filters:
+            branches:
+              only:
+                - develop
       - build:
           name: sample-build
           package_name: sample
+          requires:
+            - package-install-and-lint
+          filters:
+            branches:
+              only:
+                - develop
       - echo:
           name: sample-build
           package_name: sample
