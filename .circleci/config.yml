@@ -79,10 +79,10 @@ workflows:
       - package-install-and-lint:
           name: demo-install
           package_name: demo
-          filters:
-            branches:
-              only:
-                - develop
+          # filters:
+          #   branches:
+          #     only:
+          #       - develop
       - build:
           name: demo-build
           package_name: demo
@@ -102,10 +102,10 @@ workflows:
       - package-install-and-lint:
           name: sample-install
           package_name: sample
-          filters:
-            branches:
-              only:
-                - develop
+          # filters:
+          #   branches:
+          #     only:
+          #       - develop
       - build:
           name: sample-build
           package_name: sample
