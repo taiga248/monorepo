@@ -26,24 +26,26 @@ jobs:
           name: Trigger workflows
           command: chmod +x .circleci/circle_trigger.sh && ls -l && .circleci/circle_trigger.sh
 
-  # package-install-and-lint:
-  #   executor: node
-  #   steps:
-  #     - checkout:
-  #       path: ~/monorepo
-  #     - run:
-  #         command: npm install
-  #     - run:
-  #         command: npm run lint
+  package-install-and-lint:
+    parameters:
+      package_name:
+        type: string
+    executor: node
+    steps:
+      - checkout:
+          path: ~/monorepo
+      - run:
+          name: Package install
+          command: npm install
+      - run:
+          name: Lint
+          command: npm run lint
 
   build:
     parameters:
       package_name:
         type: string
-
     executor: node
-    working_directory: ~/monorepo/packages/<< parameters.package_name >>
-
     steps:
       - checkout:
           path: ~/monorepo
@@ -55,10 +57,7 @@ jobs:
     parameters:
       package_name:
         type: string
-
     executor: node
-    working_directory: ~/monorepo/packages/<< parameters.package_name >>
-
     steps:
       - checkout:
           path: ~/monorepo
@@ -75,7 +74,9 @@ workflows:
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
-      # - package-install-and-lint
+      - package-install-and-lint:
+            name: demo-install
+            package_name: demo      
       - build:
           name: demo-build
           package_name: demo
@@ -85,7 +86,9 @@ workflows:
   sample:
     when: << pipeline.parameters.sample >>
     jobs:
-      # - package-install-and-lint
+      - package-install-and-lint:
+          name: sample-install
+          package_name: sample
       - build:
           name: sample-build
           package_name: sample
