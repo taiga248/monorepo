@@ -69,17 +69,17 @@ workflows:
       - package-install-and-lint:
           name: demo-install-lint
           package_name: demo
-          filters:
-            branches:
-              only:
-                - develop
+          # filters:
+          #   branches:
+          #     only:
+          #       - develop
       - echo:
           name: demo-echo
           package_name: demo
-          filters:
-            branches:
-              only:
-                - develop
+          # filters:
+          #   branches:
+          #     only:
+          #       - develop
 
   sample:
     when: << pipeline.parameters.sample >>
@@ -87,14 +87,14 @@ workflows:
       - package-install-and-lint:
           name: sample-install-lint
           package_name: sample
-          filters:
-            branches:
-              only:
-                - develop
+          # filters:
+          #   branches:
+          #     only:
+          #       - develop
       - echo:
           name: sample-echo
           package_name: sample
-          filters:
-            branches:
-              only:
-                - develop
+          # filters:
+          #   branches:
+          #     only:
+          #       - develop
