@@ -43,7 +43,7 @@ jobs:
           command: npm run lint
           working_directory: ~/monorepo/<< parameters.package_name >>
 
-  build:
+  echo:
     parameters:
       package_name:
         type: string
@@ -52,8 +52,8 @@ jobs:
       - checkout:
           path: ~/monorepo
       - run:
-          name: Build
-          command: echo "<< parameters.package_name >> Building Now ..."
+          name: Echo 
+          command: echo "This working_directory is '<< parameters.package_name >>''"
           working_directory: ~/monorepo/<< parameters.package_name >>
 
 workflows:
@@ -67,14 +67,14 @@ workflows:
     when: << pipeline.parameters.demo >>
     jobs:
       - package-install-and-lint:
-          name: demo-install
+          name: demo-install-lint
           package_name: demo
           filters:
             branches:
               only:
                 - develop
-      - build:
-          name: demo-build
+      - echo:
+          name: demo-echo
           package_name: demo
           filters:
             branches:
@@ -85,14 +85,14 @@ workflows:
     when: << pipeline.parameters.sample >>
     jobs:
       - package-install-and-lint:
-          name: sample-install
+          name: sample-install-lint
           package_name: sample
           filters:
             branches:
               only:
                 - develop
-      - build:
-          name: sample-build
+      - echo:
+          name: sample-echo
           package_name: sample
           filters:
             branches:
