@@ -37,7 +37,7 @@ jobs:
       - checkout
       - run:
           name: Trigger workflows
-          command: chmod +x .circleci/circle_trigger.sh && ls -l && .circleci/circle_trigger.sh
+          command: chmod +x .circleci/circle_trigger.sh && ls -l .circleci && .circleci/circle_trigger.sh
 
   package-install-and-lint:
     parameters:
