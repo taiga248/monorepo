@@ -1,10 +1,11 @@
 version: 2.1
 
 parameters:
+  # 変更検知フラグ
   trigger:
     type: boolean
     default: true
-
+  # 各プロジェクト分のフラグを用意する
   demo:
     type: boolean
     default: false
@@ -12,17 +13,19 @@ parameters:
     type: boolean
     default: false
 
+# 実行環境
 executors:
   node:
     docker:
       - image: circleci/node:10.15.3
 
+# node_modulesのキャッシュ戦略
 references:
-  cache_key: &cache_key v1-dependencies-{{ checksum "<< pipeline.parameters.demo >>/package-lock.json" }}
+  cache_key: &cache_key v1-dependencies-{{ checksum "<< pipeline.parameters.package_name >>/package-lock.json" }}
   save_node_modules: &save_node_modules
     save_cache:
       paths:
-        - << pipeline.parameters.demo >>/node_modules
+        - << pipeline.parameters.package_name >>/node_modules
       key: *cache_key
   restore_node_modules: &restore_node_modules
     restore_cache:
@@ -31,6 +34,7 @@ references:
         - v1-dependencies-
 
 jobs:
+  # 差分検知用シェル実行
   trigger-workflows:
     executor: node
     steps:
@@ -67,7 +71,7 @@ jobs:
       - checkout:
           path: ~/monorepo
       - run:
-          name: Echo 
+          name: Echo
           command: echo "This working_directory is '<< parameters.package_name >>''"
           working_directory: ~/monorepo/<< parameters.package_name >>
 
@@ -78,6 +82,7 @@ workflows:
     jobs:
       - trigger-workflows
 
+  # 変更検知されたプロジェクトのjobが走る
   demo:
     when: << pipeline.parameters.demo >>
     jobs:
