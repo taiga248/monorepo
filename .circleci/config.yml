@@ -19,20 +19,6 @@ executors:
     docker:
       - image: circleci/node:10.15.3
 
-# node_modulesのキャッシュ戦略
-references:
-  cache_key: &cache_key v1-dependencies-{{ checksum "<< pipeline.parameters.package_name >>/package-lock.json" }}
-  save_node_modules: &save_node_modules
-    save_cache:
-      paths:
-        - << pipeline.parameters.package_name >>/node_modules
-      key: *cache_key
-  restore_node_modules: &restore_node_modules
-    restore_cache:
-      keys:
-        - *cache_key
-        - v1-dependencies-
-
 jobs:
   # 差分検知用シェル実行
   trigger-workflows:
@@ -51,12 +37,10 @@ jobs:
     steps:
       - checkout:
           path: ~/monorepo
-      - *restore_node_modules
       - run:
           name: Package install
           command: npm install
           working_directory: ~/monorepo/<< parameters.package_name >>
-      - *save_node_modules
       - run:
           name: Lint
           command: npm run lint
